@@ -104,7 +104,9 @@ public class ShowDataFromMySql extends AppCompatActivity {
                     EditText editEmail = updateDialog.findViewById(R.id.editEmail);
                     Button updateSave = updateDialog.findViewById(R.id.updateSave);
 
-
+                    editEmail.setText(email);
+                    editName.setText(name);
+                    editNumber.setText(phone);
 
                     updateSave.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -115,27 +117,34 @@ public class ShowDataFromMySql extends AppCompatActivity {
                             String url = "https://maruf5682.000webhostapp.com/apps/update.php?id="+ id +"&name="+ name +"&email="+ email +"&phone="+ phone;
 
                             progressBar.setVisibility(View.VISIBLE);
-                            StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                                    new Response.Listener<String>() {
-                                        @Override
-                                        public void onResponse(String response) {
-                                            progressBar.setVisibility(View.GONE);
-                                            new AlertDialog.Builder(ShowDataFromMySql.this)
-                                                    .setTitle("Server Response")
-                                                    .setMessage(response)
-                                                    .show();
-                                            loadData();
-                                            updateDialog.dismiss();
-                                        }
-                                    }, new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
 
-                                }
-                            });
+                            if (name.isEmpty() || email.isEmpty() || phone.isEmpty()){
+                                progressBar.setVisibility(View.GONE);
+                                Toast.makeText(ShowDataFromMySql.this, "Input is empty", Toast.LENGTH_SHORT).show();
+                            } else {
+                                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                                        new Response.Listener<String>() {
+                                            @Override
+                                            public void onResponse(String response) {
+                                                progressBar.setVisibility(View.GONE);
+                                                new AlertDialog.Builder(ShowDataFromMySql.this)
+                                                        .setTitle("Server Response")
+                                                        .setMessage(response)
+                                                        .show();
+                                                loadData();
+                                                updateDialog.dismiss();
+                                            }
+                                        }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
 
-                            RequestQueue requestQueue = Volley.newRequestQueue(ShowDataFromMySql.this);
-                            requestQueue.add(stringRequest);
+                                    }
+                                });
+
+                                RequestQueue requestQueue = Volley.newRequestQueue(ShowDataFromMySql.this);
+                                requestQueue.add(stringRequest);
+                            }
+
                         }
                     });
 
