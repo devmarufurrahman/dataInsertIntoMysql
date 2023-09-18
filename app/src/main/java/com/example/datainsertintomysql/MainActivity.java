@@ -3,6 +3,7 @@ package com.example.datainsertintomysql;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +20,7 @@ import com.android.volley.toolbox.Volley;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button sendBtn;
+    Button sendBtn,showBtn;
     EditText edtName, edtPhone, edtEmail;
     ProgressBar progressBar;
     String name,email,phone;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         edtName = findViewById(R.id.edtName);
         edtPhone = findViewById(R.id.edtPhone);
         progressBar = findViewById(R.id.progressBar);
+        showBtn = findViewById(R.id.showBtn);
 
 //        ===================================================================
         sendBtn.setOnClickListener(new View.OnClickListener() {
@@ -59,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
                                             .setTitle("Server Response")
                                             .setMessage(response)
                                             .show();
+
+                                    edtEmail.setText("");
+                                    edtName.setText("");
+                                    edtPhone.setText("");
                                 }
                             }, new Response.ErrorListener() {
                         @Override
@@ -70,6 +76,15 @@ public class MainActivity extends AppCompatActivity {
                     RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
                     requestQueue.add(stringRequest);
                 }
+            }
+        });
+
+//        ===================================================================
+        showBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, ShowDataFromMySql.class);
+                startActivity(intent);
             }
         });
     }
