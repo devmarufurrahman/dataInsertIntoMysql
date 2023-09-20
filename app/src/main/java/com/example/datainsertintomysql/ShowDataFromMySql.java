@@ -190,6 +190,7 @@ public class ShowDataFromMySql extends AppCompatActivity {
         arrayList = new ArrayList<>();
 
         String url = "https://maruf5682.000webhostapp.com/apps/view.php";
+//        String url = "http://192.168.1.19:8000/api/users";
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
