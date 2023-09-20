@@ -39,6 +39,7 @@ public class ShowDataFromMySql extends AppCompatActivity {
     ProgressBar progressBar;
     ArrayList <HashMap<String,String>> arrayList = new ArrayList<>();
     HashMap<String,String> hashMap;
+    DBHelper dbHelper = new DBHelper(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +93,8 @@ public class ShowDataFromMySql extends AppCompatActivity {
             phoneText.setText(phone);
             emailText.setText(email);
 
+
+//  Data update method
             updateBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -124,6 +127,10 @@ public class ShowDataFromMySql extends AppCompatActivity {
                                 progressBar.setVisibility(View.GONE);
                                 Toast.makeText(ShowDataFromMySql.this, "Input is empty", Toast.LENGTH_SHORT).show();
                             } else {
+                                // offline database update
+                                dbHelper.updateData(name,phone,email,id);
+
+                                // =================================
                                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                                         new Response.Listener<String>() {
                                             @Override
@@ -155,6 +162,8 @@ public class ShowDataFromMySql extends AppCompatActivity {
                 }
             });
 
+
+// delete method
             deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -188,6 +197,7 @@ public class ShowDataFromMySql extends AppCompatActivity {
     }
 
 
+    // data load online
     private void loadData(){
         arrayList = new ArrayList<>();
 
@@ -240,7 +250,7 @@ public class ShowDataFromMySql extends AppCompatActivity {
 
     // loadDataOffline
     public void loadDataOffline(){
-        DBHelper dbHelper = new DBHelper(this);
+
         Cursor result = dbHelper.readData();
 
         if (result.getCount() == 0){

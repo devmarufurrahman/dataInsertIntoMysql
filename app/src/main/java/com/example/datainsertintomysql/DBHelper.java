@@ -48,9 +48,23 @@ public class DBHelper extends SQLiteOpenHelper {
         else return true;
     }
 
+    // data fetch
     public Cursor readData(){
         SQLiteDatabase DB = this.getWritableDatabase();
         Cursor cursor = DB.rawQuery("SELECT * FROM "+ TABLE_NAME, null);
         return cursor;
+    }
+
+
+    // update data
+    public void updateData(String name, String phone, String email, String id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(NAME,name);
+        values.put(PHONE,phone);
+        values.put(EMAIL,email);
+
+        db.update(TABLE_NAME,values,ID+" = "+ id,null);
     }
 }
