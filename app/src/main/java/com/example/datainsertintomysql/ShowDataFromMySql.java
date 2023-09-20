@@ -170,6 +170,11 @@ public class ShowDataFromMySql extends AppCompatActivity {
                     Toast.makeText(ShowDataFromMySql.this, "Delete Successfully", Toast.LENGTH_SHORT).show();
                     String url = "https://maruf5682.000webhostapp.com/apps/delete.php?id="+ id;
 
+                    // offline data delete
+                    dbHelper.deleteData(id);
+
+
+                    // =====================================
                     StringRequest deleteRequest = new StringRequest(Request.Method.GET, url,
                             new Response.Listener<String>() {
                                 @Override
@@ -254,6 +259,7 @@ public class ShowDataFromMySql extends AppCompatActivity {
         Cursor result = dbHelper.readData();
 
         if (result.getCount() == 0){
+            progressBar.setVisibility(View.GONE);
             Toast.makeText(this, "there is no data", Toast.LENGTH_SHORT).show();
         } else {
             progressBar.setVisibility(View.GONE);

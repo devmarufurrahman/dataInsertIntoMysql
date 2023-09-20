@@ -87,15 +87,13 @@ public class MainActivity extends AppCompatActivity {
                                 .setMessage(response)
                                 .show();
 
-                        edtEmail.setText("");
-                        edtName.setText("");
-                        edtPhone.setText("");
+                        clearInput();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Error server", Toast.LENGTH_SHORT).show();
             }
         });
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
@@ -114,6 +112,14 @@ public class MainActivity extends AppCompatActivity {
 
         if (check){
             Toast.makeText(this, "offline data save", Toast.LENGTH_SHORT).show();
+            clearInput();
         } else Toast.makeText(this, "offline no data save", Toast.LENGTH_SHORT).show();
+    }
+
+    // clear input method
+    public void clearInput(){
+        edtEmail.setText("");
+        edtName.setText("");
+        edtPhone.setText("");
     }
 }
