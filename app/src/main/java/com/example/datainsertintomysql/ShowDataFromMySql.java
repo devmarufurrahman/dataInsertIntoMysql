@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,7 +46,8 @@ public class ShowDataFromMySql extends AppCompatActivity {
         listView = findViewById(R.id.listView);
         progressBar = findViewById(R.id.progressBar);
 
-        loadData();
+//        loadData();
+        loadDataOffline();
 
     }
 
@@ -234,5 +236,34 @@ public class ShowDataFromMySql extends AppCompatActivity {
         });
         RequestQueue requestQueue = Volley.newRequestQueue(ShowDataFromMySql.this);
         requestQueue.add(jsonArrayRequest);
+    }
+
+    // loadDataOffline
+    public void loadDataOffline(){
+        DBHelper dbHelper = new DBHelper(this);
+        Cursor result = dbHelper.readData();
+
+        if (result.getCount() == 0){
+            Toast.makeText(this, "there is no data", Toast.LENGTH_SHORT).show();
+        } else {
+            progressBar.setVisibility(View.GONE);
+
+            while (result.moveToNext()){
+                String id = result.getString(0);
+                String name = result.getString(1);
+                String phone = result.getString(2);
+                String email = result.getString(3);
+
+                hashMap = new HashMap<>();
+                hashMap.put("id",id);
+                hashMap.put("name",name);
+                hashMap.put("phone",phone);
+                hashMap.put("email",email);
+                arrayList.add(hashMap);
+            }
+            MyAdapter myAdapter = new MyAdapter();
+            listView.setAdapter(myAdapter);
+            Toast.makeText(ShowDataFromMySql.this, "successfully done", Toast.LENGTH_SHORT).show();
+        }
     }
 }

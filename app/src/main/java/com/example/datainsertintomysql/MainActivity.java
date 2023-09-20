@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         showBtn = findViewById(R.id.showBtn);
 
+
+
 //        ===================================================================
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,36 +47,14 @@ public class MainActivity extends AppCompatActivity {
                 phone = edtPhone.getText().toString();
 
 
-                String url = "https://maruf5682.000webhostapp.com/apps/data.php?n="+name+"&p="+phone+"&e="+email;
 
                 if(name.isEmpty() || email.isEmpty() || phone.isEmpty()){
                     Toast.makeText(MainActivity.this, "Input field is empty", Toast.LENGTH_SHORT).show();
                     progressBar.setVisibility(View.GONE);
                 } else {
+                    sendDataOffline();
 
-                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    progressBar.setVisibility(View.GONE);
-                                    new AlertDialog.Builder(MainActivity.this)
-                                            .setTitle("Server Response")
-                                            .setMessage(response)
-                                            .show();
-
-                                    edtEmail.setText("");
-                                    edtName.setText("");
-                                    edtPhone.setText("");
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            progressBar.setVisibility(View.GONE);
-                            Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                    RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
-                    requestQueue.add(stringRequest);
+                    sendDataOnline();
                 }
             }
         });
@@ -87,5 +67,53 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+
+    // Send data online in MySql
+    public void  sendDataOnline(){
+        name = edtName.getText().toString();
+        email = edtEmail.getText().toString();
+        phone = edtPhone.getText().toString();
+        String url = "https://maruf5682.000webhostapp.com/apps/data.php?n="+name+"&p="+phone+"&e="+email;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        progressBar.setVisibility(View.GONE);
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle("Server Response")
+                                .setMessage(response)
+                                .show();
+
+                        edtEmail.setText("");
+                        edtName.setText("");
+                        edtPhone.setText("");
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                progressBar.setVisibility(View.GONE);
+                Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+        requestQueue.add(stringRequest);
+    }
+
+    // Send data offline in SQLite
+    public void sendDataOffline(){
+        DBHelper dbHelper = new DBHelper(this);
+
+        name = edtName.getText().toString();
+        email = edtEmail.getText().toString();
+        phone = edtPhone.getText().toString();
+
+        Boolean check = dbHelper.insertData(name,phone,email);
+
+        if (check){
+            Toast.makeText(this, "offline data save", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this, "offline no data save", Toast.LENGTH_SHORT).show();
     }
 }
