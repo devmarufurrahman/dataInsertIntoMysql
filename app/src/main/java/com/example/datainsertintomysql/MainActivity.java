@@ -3,7 +3,12 @@ package com.example.datainsertintomysql;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ConnectionReceiver.ReceiverListener {
 
     Button sendBtn,showBtn;
     EditText edtName, edtPhone, edtEmail;
@@ -34,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
         edtPhone = findViewById(R.id.edtPhone);
         progressBar = findViewById(R.id.progressBar);
         showBtn = findViewById(R.id.showBtn);
+
+        // Network validation ===============================
+        checkConnection();
+
 
 
 
@@ -121,5 +130,46 @@ public class MainActivity extends AppCompatActivity {
         edtEmail.setText("");
         edtName.setText("");
         edtPhone.setText("");
+    }
+
+
+    // is network available
+    private void checkConnection() {
+
+        // initialize intent filter
+        IntentFilter intentFilter = new IntentFilter();
+
+        // add action
+        intentFilter.addAction("android.new.conn.CONNECTIVITY_CHANGE");
+
+        // register receiver
+        registerReceiver(new ConnectionReceiver(), intentFilter);
+
+        // Initialize listener
+        ConnectionReceiver.Listener = this;
+
+        // Initialize connectivity manager
+        ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        // Initialize network info
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+
+        // get connection status
+        boolean isConnected = networkInfo != null && networkInfo.isConnectedOrConnecting();
+
+        // display toast
+        makeToast(isConnected);
+
+    }
+
+    public void makeToast(boolean isConnected){
+        if (isConnected){
+            Toast.makeText(this, "INTERNET AVAILABLE", Toast.LENGTH_SHORT).show();
+        } else Toast.makeText(this, "NO INTERNET", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNetworkChange(boolean isConnected) {
+        makeToast(isConnected);
     }
 }
