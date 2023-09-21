@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements ConnectionReceive
     private void checkConnection() {
 
         // initialize intent filter
-        IntentFilter intentFilter = new IntentFilter();
+        IntentFilter intentFilter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 
         // add action
         intentFilter.addAction("android.new.conn.CONNECTIVITY_CHANGE");
@@ -170,6 +170,29 @@ public class MainActivity extends AppCompatActivity implements ConnectionReceive
 
     @Override
     public void onNetworkChange(boolean isConnected) {
+
         makeToast(isConnected);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // call method
+        checkConnection();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // call method
+        checkConnection();
+
+    }
+
+    @Override
+    protected void onStop() {
+        checkConnection();
+        super.onStop();
     }
 }
